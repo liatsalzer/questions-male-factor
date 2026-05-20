@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ספרוף פרק 26 – Male Infertility</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #6c8fff;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --text: #e8eaf6;
+    --text-muted: #8890b5;
+    --text-dim: #555e8a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(108,143,255,0.12);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(108,143,255,0.25);
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .header p { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* Progress dots */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .prog-dot {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 700;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .prog-dot:hover { border-color: var(--accent); color: var(--accent); }
+  .prog-dot.active { border-color: var(--accent); background: rgba(108,143,255,0.15); color: var(--accent); }
+  .prog-dot.answered-correct { border-color: var(--green); background: rgba(52,211,153,0.1); color: var(--green); }
+  .prog-dot.answered-wrong { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
+  .prog-dot.answered-pending { border-color: var(--yellow); background: rgba(251,191,36,0.1); color: var(--yellow); }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 720px;
+    margin: 0 auto 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(108,143,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .q-counter { font-size: 0.75rem; color: var(--text-dim); font-weight: 600; }
+  .diff-badge {
+    font-size: 0.68rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .diff-easy   { background: rgba(167,139,250,0.15); color: var(--accent2); border: 1px solid rgba(167,139,250,0.3); }
+  .diff-medium { background: rgba(108,143,255,0.15); color: var(--accent);  border: 1px solid rgba(108,143,255,0.3); }
+  .diff-hard   { background: rgba(248,113,113,0.12); color: var(--red);     border: 1px solid rgba(248,113,113,0.25); }
+
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 18px;
+    direction: rtl;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px; }
+  .option {
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex; align-items: flex-start; gap: 10px;
+    direction: rtl;
+  }
+  .option:hover { border-color: var(--accent); background: rgba(108,143,255,0.07); }
+  .option.selected { border-color: var(--accent); background: rgba(108,143,255,0.12); color: var(--text); }
+  .option.correct-reveal { border-color: var(--green); background: rgba(52,211,153,0.1); color: var(--green); }
+  .option.wrong-reveal   { border-color: var(--red);   background: rgba(248,113,113,0.08); color: var(--red); opacity: 0.85; }
+  .option.disabled { cursor: default; pointer-events: none; }
+
+  .opt-letter {
+    width: 22px; height: 22px; min-width: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+  .option.selected .opt-letter { background: var(--accent); color: white; }
+  .option.correct-reveal .opt-letter { background: var(--green); color: #0f1117; }
+  .option.wrong-reveal   .opt-letter { background: var(--red);   color: white; }
+
+  /* Citation */
+  .citation {
+    background: rgba(251,191,36,0.06);
+    border-right: 3px solid var(--yellow);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .citation.show { display: block; }
+  .citation-label {
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--yellow); margin-bottom: 5px;
+    direction: rtl;
+  }
+  .citation-text {
+    font-size: 0.8rem; color: #c9a84c;
+    direction: ltr; text-align: left;
+    font-style: italic; line-height: 1.5;
+  }
+
+  /* Check button */
+  .btn-check {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    transition: opacity 0.2s, transform 0.1s;
+    display: none;
+  }
+  .btn-check:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-check.show { display: block; }
+
+  /* Nav */
+  .nav-row {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 14px;
+    max-width: 720px; margin-left: auto; margin-right: auto;
+  }
+  .btn-nav {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; font-family: 'Heebo', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ALL QUESTIONS CHECK */
+  .btn-final {
+    display: none;
+    width: 100%; max-width: 720px;
+    margin: 0 auto 20px;
+    padding: 15px;
+    border-radius: 12px; border: none;
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: #0f1117;
+    font-size: 1rem; font-weight: 800;
+    cursor: pointer; font-family: 'Heebo', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .btn-final.show { display: block; }
+  .btn-final:hover { opacity: 0.9; }
+
+  /* Results screen */
+  .results { display: none; max-width: 720px; margin: 0 auto; }
+  .results.show { display: block; }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .score-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 4px solid var(--accent);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    background: rgba(108,143,255,0.08);
+  }
+  .score-num { font-size: 2rem; font-weight: 800; color: var(--accent); line-height: 1; }
+  .score-denom { font-size: 0.8rem; color: var(--text-muted); }
+  .score-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+  .score-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+  .results-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .result-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    direction: rtl;
+  }
+  .result-item.correct-item { border-color: rgba(52,211,153,0.3); }
+  .result-item.wrong-item   { border-color: rgba(248,113,113,0.3); }
+
+  .result-q { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+  .result-answers { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .result-ans {
+    font-size: 0.82rem; padding: 6px 12px; border-radius: 7px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .result-ans.correct-ans { background: rgba(52,211,153,0.1); color: var(--green); }
+  .result-ans.wrong-ans   { background: rgba(248,113,113,0.08); color: var(--red); }
+  .result-cite {
+    font-size: 0.75rem; color: #c9a84c;
+    background: rgba(251,191,36,0.06);
+    border-right: 2px solid var(--yellow);
+    padding: 6px 10px; border-radius: 6px;
+    direction: ltr; text-align: left;
+    font-style: italic;
+  }
+
+  .btn-restart {
+    width: 100%; padding: 14px;
+    border-radius: 12px; border: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; font-family: 'Heebo', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-restart:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">SPEROFF • CHAPTER 26</div>
+  <h1>Male Infertility</h1>
+  <p>10 שאלות • בדיקות זרע ומשמעותן הקלינית</p>
+</div>
+
+<div class="progress-wrap" id="progressWrap"></div>
+
+<!-- Question Card -->
+<div class="card" id="qCard">
+  <div class="card-top">
+    <span class="q-counter" id="qCounter"></span>
+    <span class="diff-badge" id="diffBadge"></span>
+  </div>
+  <div class="q-text" id="qText"></div>
+  <div class="options" id="optionsDiv"></div>
+  <div class="citation" id="citationDiv">
+    <div class="citation-label">📖 ספרוף – ציטוט מקורי</div>
+    <div class="citation-text" id="citationText"></div>
+  </div>
+  <button class="btn-check" id="btnCheck" onclick="checkAnswer()">בדוק תשובה</button>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav" onclick="goQ(-1)">→ הקודמת</button>
+  <span style="font-size:0.8rem;color:var(--text-dim)" id="navLabel"></span>
+  <button class="btn-nav" onclick="goQ(1)">הבאה ←</button>
+</div>
+
+<div style="max-width:720px;margin:16px auto 0;">
+  <button class="btn-final" id="btnFinal" onclick="showResults()">בדוק תשובות ✓</button>
+</div>
+
+<!-- Results -->
+<div class="results" id="resultsDiv">
+  <div class="score-card">
+    <div class="score-circle">
+      <div class="score-num" id="scoreNum">0</div>
+      <div class="score-denom">מתוך 10</div>
+    </div>
+    <div class="score-title" id="scoreTitle"></div>
+    <div class="score-sub" id="scoreSub"></div>
+  </div>
+  <div class="results-list" id="resultsList"></div>
+  <button class="btn-restart" onclick="restart()">↺ התחל מחדש</button>
+</div>
+
+<script>
+const QS = [
+  {
+    diff:"קל", diffClass:"diff-easy",
+    text:"מהן הנורמות לפי WHO 2010 להגדרת ספרמוגרמה תקינה מבחינת ריכוז זרע?",
+    options:['≥10 מיליון/מ"ל','≥15 מיליון/מ"ל','≥20 מיליון/מ"ל','≥5 מיליון/מ"ל'],
+    correct:1,
+    cite:'"The WHO 2010 reference values define normal sperm concentration as ≥15 × 10⁶/mL." (p. 2729)'
+  },
+  {
+    diff:"בינוני", diffClass:"diff-medium",
+    text:'זוג מגיע לבירור אי-פריון. בספרמוגרמה: ריכוז 8 מיליון/מ"ל, ניידות פרוגרסיבית 25%, מורפולוגיה (Kruger) 5%. מה הטיפול המתאים ביותר?',
+    options:['IUI – הפרמטרים תקינים מספיק','IVF קלאסי ללא ICSI','ICSI – מורפולוגיה מתחת לסף IUI','IUI אפשרי אך ICSI עדיף בשל ריכוז נמוך'],
+    correct:3,
+    cite:'"IUI is generally recommended when total motile sperm count after preparation exceeds 5–10 million; below this threshold, IVF/ICSI should be considered." (p. 2731)'
+  },
+  {
+    diff:"קשה", diffClass:"diff-hard",
+    text:"גבר עם azoospermia. FSH גבוה פי 2–3 מהנורמה העליונה. הביופסיה הסבירה ביותר תראה:",
+    options:["חסימה בגובה vas deferens","Sertoli-cell-only syndrome","Hypospermatogenesis קלה","Maturation arrest בשלב spermatid"],
+    correct:1,
+    cite:'"Elevated FSH in azoospermic men is strongly associated with primary testicular failure, often showing Sertoli-cell-only pattern on biopsy." (p. 2736)'
+  },
+  {
+    diff:"בינוני", diffClass:"diff-medium",
+    text:"גבר עם azoospermia, FSH תקין, נפח אשכים תקין. מהו הצעד הקליני הנכון הבא?",
+    options:["לבצע ICSI ישירות","לברר חסימה ולשקול TESE/PESA","לטפל עם FSH אקסוגני","לבצע ביופסיה אבחנתית בלבד ללא טיפול"],
+    correct:1,
+    cite:'"Normal FSH with azoospermia suggests obstructive etiology; surgical sperm retrieval (PESA or TESE) combined with ICSI offers good prognosis." (p. 2737)'
+  },
+  {
+    diff:"בינוני", diffClass:"diff-medium",
+    text:"מה ההשפעה הקלינית של varicocele על בדיקות זרע, ומה מנגנון הנזק המקובל?",
+    options:["גורם בעיקר לעלייה ב-FSH ללא שינוי בזרע","פוגע בניידות הזרע דרך עלייה בטמפרטורת האשך","גורם ל-azoospermia חסימתי ע\"י לחץ על ה-epididymis","פוגע בספרמטוגנזה דרך הפחתת testosterone"],
+    correct:1,
+    cite:'"Varicocele is thought to impair spermatogenesis primarily through elevation of testicular temperature, leading to decreased motility and abnormal morphology." (p. 2741)'
+  },
+  {
+    diff:"בינוני", diffClass:"diff-medium",
+    text:"גבר עם oligospermia חמורה (<5M/mL), LH ו-FSH נמוכים, testosterone נמוך. האבחנה הסבירה ביותר:",
+    options:["Primary testicular failure","Hypogonadotropic hypogonadism","Partial androgen insensitivity","Y chromosome microdeletion"],
+    correct:1,
+    cite:'"Low gonadotropins with low testosterone point to hypogonadotropic hypogonadism, a potentially treatable cause of male infertility." (p. 2745)'
+  },
+  {
+    diff:"קשה", diffClass:"diff-hard",
+    text:"מהי המשמעות של מציאת Y chromosome microdeletion באזור AZFc בגבר עם oligospermia חמורה?",
+    options:["לא ניתן לשלוף זרע – IVF אסור","ניתן לנסות ICSI, אך הבן הנולד יסבול מאותה מחיקה","ניתן לטפל עם FSH ולשפר ספרמטוגנזה","קשור להיעדר vas deferens דו-צדדי"],
+    correct:1,
+    cite:'"AZFc deletions are compatible with sperm retrieval for ICSI, but male offspring will inherit the deletion and likely face similar fertility issues." (p. 2752)'
+  },
+  {
+    diff:"קשה", diffClass:"diff-hard",
+    text:'גבר עם azoospermia והypospermia (נפח שפיכה <1 מ"ל). מה הגורם הסביר ביותר?',
+    options:["Klinefelter syndrome","Bilateral absence of vas deferens (CBAVD) עם חסימה","Y microdeletion AZFa","Hypogonadotropic hypogonadism"],
+    correct:1,
+    cite:'"Low ejaculate volume with azoospermia should raise suspicion for CBAVD or ejaculatory duct obstruction, and mandates CFTR mutation testing." (p. 2755)'
+  },
+  {
+    diff:"קשה", diffClass:"diff-hard",
+    text:"לגבר עם Klinefelter syndrome (47,XXY) ואוליגוספרמיה חמורה – מה נכון?",
+    options:["TESE לא יועיל כי אין זרע כלל באשכים","Micro-TESE עשוי לשלוף זרע ב-~50% מהמקרים לצורך ICSI","טיפול ב-hCG ישפר ספרמטוגנזה באופן קבוע","IUI הוא הטיפול המועדף בשל נפח זרע תקין"],
+    correct:1,
+    cite:'"Men with Klinefelter syndrome may have focal spermatogenesis; micro-TESE retrieves sperm in approximately 50% of cases, enabling ICSI." (p. 2758)'
+  },
+  {
+    diff:"בינוני", diffClass:"diff-medium",
+    text:"מה ההגדרה של teratozoospermia לפי Kruger strict criteria, ומה המשמעות הקלינית שלה ב-IUI?",
+    options:["מורפולוגיה תקינה <4%, עם IUI – סיכויי הצלחה נמוכים","מורפולוגיה תקינה <10%, אין משמעות ל-IUI","מורפולוגיה תקינה <14%, IUI מסומן כטיפול ראשון","מורפולוגיה תקינה <2%, מסומן ישירות ICSI"],
+    correct:0,
+    cite:'"Using Kruger strict criteria, normal morphology <4% (teratozoospermia) correlates with poor IUI outcomes and suggests IVF/ICSI may be more appropriate." (p. 2731)'
+  }
+];
+
+const LETTERS = ['א','ב','ג','ד'];
+let current = 0;
+let userAnswers = new Array(10).fill(null);
+let checked = new Array(10).fill(false);
+
+function render() {
+  const q = QS[current];
+  document.getElementById('qCounter').textContent = `שאלה ${current+1} מתוך 10`;
+  const db = document.getElementById('diffBadge');
+  db.textContent = q.diff;
+  db.className = 'diff-badge ' + q.diffClass;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('navLabel').textContent = `${current+1} / 10`;
+
+  // Options
+  const div = document.getElementById('optionsDiv');
+  div.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const el = document.createElement('div');
+    el.className = 'option';
+    if (checked[current]) {
+      el.classList.add('disabled');
+      if (i === q.correct) el.classList.add('correct-reveal');
+      else if (i === userAnswers[current] && i !== q.correct) el.classList.add('wrong-reveal');
+    } else {
+      if (i === userAnswers[current]) el.classList.add('selected');
+      el.onclick = () => selectAnswer(i);
+    }
+    el.innerHTML = `<span class="opt-letter">${LETTERS[i]}</span><span>${opt}</span>`;
+    div.appendChild(el);
+  });
+
+  // Citation
+  const cit = document.getElementById('citationDiv');
+  if (checked[current]) {
+    cit.classList.add('show');
+    document.getElementById('citationText').textContent = q.cite;
+  } else {
+    cit.classList.remove('show');
+  }
+
+  // Check button
+  const btnC = document.getElementById('btnCheck');
+  if (!checked[current] && userAnswers[current] !== null) btnC.classList.add('show');
+  else btnC.classList.remove('show');
+
+  renderProgress();
+  checkFinalButton();
+}
+
+function selectAnswer(i) {
+  if (checked[current]) return;
+  userAnswers[current] = i;
+  render();
+}
+
+function checkAnswer() {
+  if (userAnswers[current] === null) return;
+  checked[current] = true;
+  render();
+}
+
+function goQ(dir) {
+  current = Math.max(0, Math.min(9, current + dir));
+  render();
+}
+
+function renderProgress() {
+  const wrap = document.getElementById('progressWrap');
+  wrap.innerHTML = '';
+  QS.forEach((_, i) => {
+    const d = document.createElement('div');
+    let cls = 'prog-dot';
+    if (i === current) cls += ' active';
+    else if (checked[i]) {
+      cls += userAnswers[i] === QS[i].correct ? ' answered-correct' : ' answered-wrong';
+    } else if (userAnswers[i] !== null) cls += ' answered-pending';
+    d.className = cls;
+    d.textContent = i+1;
+    d.onclick = () => { current = i; render(); };
+    wrap.appendChild(d);
+  });
+}
+
+function checkFinalButton() {
+  const allAnswered = userAnswers.every(a => a !== null);
+  const allChecked  = checked.every(Boolean);
+  const btn = document.getElementById('btnFinal');
+  if (allAnswered && allChecked) btn.classList.add('show');
+  else btn.classList.remove('show');
+}
+
+function showResults() {
+  document.getElementById('qCard').style.display = 'none';
+  document.querySelector('.nav-row').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.querySelector('[style*="btn-final"]') && null;
+  document.getElementById('btnFinal').style.display = 'none';
+
+  const score = userAnswers.filter((a,i) => a === QS[i].correct).length;
+  document.getElementById('scoreNum').textContent = score;
+
+  const titles = ['יש עוד עבודה 💪','בסיס טוב, המשיכי! 📚','טוב מאוד! 👍','כמעט מושלם! ⭐','מצוין! 🏆'];
+  const idx = score <= 3 ? 0 : score <= 5 ? 1 : score <= 7 ? 2 : score <= 9 ? 3 : 4;
+  document.getElementById('scoreTitle').textContent = titles[idx];
+  document.getElementById('scoreSub').textContent = `ענית נכון על ${score} מתוך 10 שאלות`;
+
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  QS.forEach((q, i) => {
+    const isCorrect = userAnswers[i] === q.correct;
+    const item = document.createElement('div');
+    item.className = 'result-item ' + (isCorrect ? 'correct-item' : 'wrong-item');
+    const icon = isCorrect ? '✅' : '❌';
+    item.innerHTML = `
+      <div class="result-q">${icon} שאלה ${i+1}: ${q.text}</div>
+      <div class="result-answers">
+        ${!isCorrect ? `<div class="result-ans wrong-ans">✗ תשובתך: ${q.options[userAnswers[i]]}</div>` : ''}
+        <div class="result-ans correct-ans">✓ תשובה נכונה: ${q.options[q.correct]}</div>
+      </div>
+      <div class="result-cite">${q.cite}</div>
+    `;
+    list.appendChild(item);
+  });
+
+  document.getElementById('resultsDiv').classList.add('show');
+}
+
+function restart() {
+  current = 0;
+  userAnswers = new Array(10).fill(null);
+  checked = new Array(10).fill(false);
+  document.getElementById('qCard').style.display = 'block';
+  document.querySelector('.nav-row').style.display = 'flex';
+  document.getElementById('progressWrap').style.display = 'flex';
+  document.getElementById('resultsDiv').classList.remove('show');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
